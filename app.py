@@ -5,6 +5,30 @@ import streamlit as st
 import pandas as pd
 import datetime
 import smtplib
+import hmac
+
+def check_password():
+    """Returns `True` if the user had the correct password."""
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if hmac.compare_digest(st.session_state["password"], st.secrets["password"]):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store the password.
+        else:
+            st.session_state["password_correct"] = False
+
+    # Return True if the password is validated.
+    if st.session_state.get("password_correct", False):
+        return True
+
+    # Show input for password.
+    st.text_input(
+        "Password", type="password", on_change=password_entered, key="password"
+    )
+    if "password_correct" in st.session_state:
+        st.error("😕 Password incorrect")
+    return False
 
 def send_email(bil, dato, person, bestilling):
     print(bestilling)
@@ -24,6 +48,9 @@ def send_email(bil, dato, person, bestilling):
     
     server.sendmail(st.secrets["SENDER_ADDRESS"], st.secrets["RECEIVER_ADDRESS"], text)
     server.quit()
+
+if not check_password():
+    st.stop()
 
 smais = pd.read_csv("bestllingslistecsvv2.csv", sep=";", nrows=31, converters={'Artikkelnummer': str})
 multipack = pd.read_csv("bestllingslistecsvv2.csv", sep=";", skiprows=[i for i in range(1, 32)], nrows=29, converters={'Artikkelnummer': str})
