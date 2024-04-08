@@ -86,7 +86,8 @@ edit_multipack = st.data_editor(multipack, hide_index=True, use_container_width=
                                         min_value = 0,
                                         max_value = 16,
                                         step=1
-                                    )
+                                    ),
+                                "Artikkelnummer": None
                             })
 
 st.write("Desserter")
@@ -96,7 +97,8 @@ edit_dessert = st.data_editor(dessert, hide_index=True, use_container_width=True
                                     "Antall D-pakk",
                                     min_value = 0,
                                     max_value = 16,
-                                    step=1)
+                                    step=1),
+                                "Artikkelnummer": None
                             })
 
 st.write("Du skal bestille (dobbelsjekk!)")
