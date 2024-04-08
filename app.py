@@ -74,7 +74,8 @@ edit_smais = st.data_editor(smais, hide_index=True, use_container_width=True, di
                                     min_value = 0,
                                     max_value = 16,
                                     step=1
-                                )
+                                ),
+                                "Artikkelnummer": None
                             })
 
 st.write("Multipacks")
