@@ -24,7 +24,7 @@ def check_password():
 
     # Show input for password.
     st.text_input(
-        "Kode", type="password", on_change=password_entered, key="password"
+        "Kode (trykk enter)", type="password", on_change=password_entered, key="password"
     )
     if "password_correct" in st.session_state:
         st.error("Vennligst skriv inn korrekt kode")
