@@ -24,10 +24,10 @@ def check_password():
 
     # Show input for password.
     st.text_input(
-        "Password", type="password", on_change=password_entered, key="password"
+        "Kode", type="password", on_change=password_entered, key="password"
     )
     if "password_correct" in st.session_state:
-        st.error("😕 Password incorrect")
+        st.error("Vennligst skriv inn korrekt kode")
     return False
 
 def send_email(bil, dato, person, bestilling):
