@@ -1,1 +1,2 @@
 python-environ==0.4.54
+pandas==2.2.0
