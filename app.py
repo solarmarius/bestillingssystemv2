@@ -74,8 +74,7 @@ edit_smais = st.data_editor(smais, hide_index=True, use_container_width=True, di
                                     min_value = 0,
                                     max_value = 16,
                                     step=1
-                                ),
-                                "Artikkelnummer": None
+                                )
                             })
 
 st.write("Multipacks")
@@ -86,8 +85,7 @@ edit_multipack = st.data_editor(multipack, hide_index=True, use_container_width=
                                         min_value = 0,
                                         max_value = 16,
                                         step=1
-                                    ),
-                                "Artikkelnummer": None
+                                    )
                             })
 
 st.write("Desserter")
@@ -97,8 +95,7 @@ edit_dessert = st.data_editor(dessert, hide_index=True, use_container_width=True
                                     "Antall D-pakk",
                                     min_value = 0,
                                     max_value = 16,
-                                    step=1),
-                                "Artikkelnummer": None
+                                    step=1)
                             })
 
 st.write("Du skal bestille (dobbelsjekk!)")
