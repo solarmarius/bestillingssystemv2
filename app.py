@@ -34,7 +34,7 @@ def send_email(bilfra, biltil, dato, person, selgernummer, bestilling, arsak, mo
     print("Bestilling:", bestilling)
     
     message = MIMEMultipart()
-    message["Subject"] = "Bestilling fra Tromsø"
+    message["Subject"] = "Bestilling fra Tromsø {}".format(dato)
     message["From"] = st.secrets["SENDER_ADDRESS"]
     message["To"] = st.secrets["RECEIVER_ADDRESS"]
     if mode == 1: # Varebestilling
@@ -84,7 +84,7 @@ with bestilling:
     navn_bes = st.text_input("Sjåfør navn:", key="name_bes", placeholder="Ditt navn")
 
     dato_bes = st.date_input("Bestilt til dato:", key="dato_bes", format="DD/MM/YYYY", value=datetime.date.today()+datetime.timedelta(days=1))
-    dato_bes = dato_bes.strftime("%d/%m/%Y")
+    dato_bes = dato_bes.strftime("%d.%m.%Y")
 
 
     st.write("Småis")
@@ -164,11 +164,14 @@ with overforing:
     
     bilfra_ov = st.selectbox("Bil:", ("790", "791", "792"), key="bilfra_ov", placeholder="Velg bil fra", index=None)
     biltil_ov = st.selectbox("Bil:", ("790", "791", "792"), key="biltil_ov", placeholder="Velg bil til", index=None)
+    
+    if (bilfra_ov != None or biltil_ov != None) and (bilfra_ov == biltil_ov):
+        st.write("Bil fra og Bil til er det samme!")
 
     navn_ov = st.text_input("Sjåfør navn:", key="name_ov", placeholder="Ditt navn")
 
     dato_ov = st.date_input("Overført dato:", key="dato_ov", format="DD/MM/YYYY", value=datetime.date.today()+datetime.timedelta(days=1))
-    dato_ov = dato_ov.strftime("%d/%m/%Y")
+    dato_ov = dato_ov.strftime("%d.%m.%Y")
 
     st.write("Småis")
     smais_ov = st.data_editor(smais, hide_index=True, use_container_width=True, disabled=(2,3), key="smais_ov",
@@ -250,7 +253,7 @@ with personal:
     nummer_per = st.text_input("Selgernummer:", key="nummer_per", placeholder="Ditt selgernummer")
 
     dato_per = st.date_input("Bestillt til dato:", key="dato_per", format="DD/MM/YYYY", value=datetime.date.today()+datetime.timedelta(days=1))
-    dato_per = dato_per.strftime("%d/%m/%Y")
+    dato_per = dato_per.strftime("%d.%m.%Y")
     
     st.write("NB: Du bestiller D-pakk. Merk antall på isene, spesielt på multipacks!")
 
@@ -335,7 +338,7 @@ with vrak:
     navn_vrak = st.text_input("Sjåfør navn:", key="name_vrak", placeholder="Ditt navn")
 
     dato_vrak = st.date_input("Bestilt til dato:", key="dato_vrak", format="DD/MM/YYYY", value=datetime.date.today()+datetime.timedelta(days=1))
-    dato_vrak = dato_vrak.strftime("%d/%m/%Y")
+    dato_vrak = dato_vrak.strftime("%d.%m.%Y")
 
 
     st.write("Småis")
