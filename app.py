@@ -23,8 +23,14 @@ def check_password():
         return True
 
     # Show input for password.
+    img, head = st.columns(spec=[0.2,0.8], gap="small")
+    with img:
+        st.image("images/logo.png", width=100)
+    with head:
+        st.header("Velkommen til bestillingsportalen :icecream:", divider="blue")
+        
     st.text_input(
-        "Kode (trykk enter)", on_change=password_entered, key="password"
+        "Kode, (for Tromsø: inngangskode til kontor):", on_change=password_entered, key="password", placeholder="4-sifret tall (trykk enter)"
     )
     if "password_correct" in st.session_state:
         st.error("Vennligst skriv inn korrekt kode")
@@ -59,7 +65,7 @@ def send_email(bilfra, biltil, dato, person, selgernummer, bestilling, arsak, mo
 if not check_password():
     st.stop()
     
-bestillingsliste = pd.read_csv("bestllingslistecsvv2.csv", sep=";", converters={'Artikkelnummer': str})
+bestillingsliste = pd.read_csv("data/bestillingsliste_april.csv", sep=";", converters={'Artikkelnummer': str})
 # Get the DataFrame column names as a list
 clist = list(bestillingsliste.columns)
 
@@ -148,15 +154,16 @@ with bestilling:
                 bes = "{} | {} | {}\n".format(artnr, artnavn, antalldpakk)
                 print("Rad:", bes, "\n")
                 bestilling_email += bes
-            send_email(bilfra=bil_bes, 
-                       biltil=None, 
-                       dato=dato_bes, 
-                       person=navn_bes, 
-                       selgernummer=None, 
-                       bestilling=bestilling_email, 
-                       arsak=None, 
-                       mode=1)
-            st.write("Bestilling sendt inn for {}, av {}, den {}".format(bil_bes, navn_bes, dato_bes))
+            with st.spinner("Sender bestilling..."):
+                send_email(bilfra=bil_bes, 
+                        biltil=None, 
+                        dato=dato_bes, 
+                        person=navn_bes, 
+                        selgernummer=None, 
+                        bestilling=bestilling_email, 
+                        arsak=None, 
+                        mode=1)
+            st.success("Bestilling sendt inn for {}, av {}, den {}".format(bil_bes, navn_bes, dato_bes))
             st.write("Du kan nå lukke appen.")
             
 with overforing:
@@ -235,15 +242,16 @@ with overforing:
                 bes = "{} | {} | {}\n".format(artnr, artnavn, antalldpakk)
                 print("Rad:", bes, "\n")
                 bestilling_email += bes
-            send_email(bilfra=bilfra_ov, 
-                       biltil=biltil_ov,
-                       dato=dato_ov, 
-                       person=navn_ov, 
-                       selgernummer=None, 
-                       bestilling=bestilling_email, 
-                       arsak=None, 
-                       mode=2)
-            st.write("Overføring sendt inn fra bil {}, til bil {}, den {}".format(bilfra_ov, biltil_ov, dato_ov))
+            with st.spinner("Sender bestilling..."):
+                send_email(bilfra=bilfra_ov, 
+                        biltil=biltil_ov,
+                        dato=dato_ov, 
+                        person=navn_ov, 
+                        selgernummer=None, 
+                        bestilling=bestilling_email, 
+                        arsak=None, 
+                        mode=2)
+            st.success("Overføring sendt inn fra bil {}, til bil {}, den {}".format(bilfra_ov, biltil_ov, dato_ov))
             st.write("Du kan nå lukke appen.")
 
 with personal:
@@ -319,15 +327,16 @@ with personal:
                 bes = "{} | {} | {}\n".format(artnr, artnavn, antalldpakk)
                 print("Rad:", bes, "\n")
                 bestilling_email += bes
-            send_email(bilfra=None, 
-                       biltil=None,
-                       dato=dato_per, 
-                       person=navn_per, 
-                       selgernummer=nummer_per, 
-                       bestilling=bestilling_email, 
-                       arsak=None, 
-                       mode=3)
-            st.write("Personalbestilling sendt inn for {} den {}".format(navn_per, dato_per))
+            with st.spinner("Sender bestilling..."):
+                send_email(bilfra=None, 
+                        biltil=None,
+                        dato=dato_per, 
+                        person=navn_per, 
+                        selgernummer=nummer_per, 
+                        bestilling=bestilling_email, 
+                        arsak=None, 
+                        mode=3)
+            st.success("Personalbestilling sendt inn for {} den {}".format(navn_per, dato_per))
             st.write("Du kan nå lukke appen.")
 
 with vrak:
@@ -404,13 +413,14 @@ with vrak:
                 bes = "{} | {} | {}\n".format(artnr, artnavn, antalldpakk)
                 print("Rad:", bes, "\n")
                 bestilling_email += bes
-            send_email(bilfra=bil_vrak, 
-                       biltil=None, 
-                       dato=dato_vrak, 
-                       person=navn_vrak, 
-                       selgernummer=None, 
-                       bestilling=bestilling_email, 
-                       arsak=arsak_vrak, 
-                       mode=4)
-            st.write("Vrakordre sendt inn for {}, av {}, den {}".format(bil_vrak, navn_vrak, dato_vrak))
+            with st.spinner("Sender bestilling..."):
+                send_email(bilfra=bil_vrak, 
+                        biltil=None, 
+                        dato=dato_vrak, 
+                        person=navn_vrak, 
+                        selgernummer=None, 
+                        bestilling=bestilling_email, 
+                        arsak=arsak_vrak, 
+                        mode=4)
+            st.success("Vrakordre sendt inn for {}, av {}, den {}".format(bil_vrak, navn_vrak, dato_vrak))
             st.write("Du kan nå lukke appen.")
