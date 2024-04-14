@@ -54,7 +54,7 @@ with st.form(key="bestillingsform_bes", border=False):
             send_email(bilfra=bil_bes, 
                     biltil=None, 
                     dato=dato_bes, 
-                    person=navn_bes, 
+                    person=navn_bes,
                     selgernummer=None, 
                     bestilling=bestilling, 
                     arsak=None, 
