@@ -1,2 +1,3 @@
 python-environ==0.4.54
 pandas==2.2.0
+streamlit-authenticator==0.3.2
