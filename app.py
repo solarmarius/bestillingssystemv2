@@ -5,6 +5,12 @@ Main app.
 import streamlit as st
 import hmac
 
+st.set_page_config(
+    page_title="Bestilling for DIB",
+    page_icon="🍨",
+)
+
+
 def check_password():
     """Returns `True` if the user had the correct password."""
 
@@ -21,18 +27,27 @@ def check_password():
         return True
 
     # Show input for password.
-    img, head = st.columns(spec=[0.2,0.8], gap="small")
+    img, head = st.columns(spec=[0.2, 0.8], gap="small")
     with img:
-        st.image("images/logo.png", width=100)
+        st.image("static/logo.png", width=100)
     with head:
         st.header("Velkommen til bestillingsportalen :icecream:", divider="orange")
-        
+
     st.text_input(
-        "Kode, (for Tromsø: inngangskode til kontor):", on_change=password_entered, key="password", placeholder="4-sifret tall (trykk enter)"
+        "Kode, (for Tromsø: inngangskode til kontor):",
+        on_change=password_entered,
+        key="password",
+        placeholder="4-sifret tall (trykk enter)",
     )
+
     if "password_correct" in st.session_state:
         st.error("Vennligst skriv inn korrekt kode")
+
+    if st.button(label="Innlogg for adminstrator", use_container_width=True):
+        st.switch_page("pages/admin.py")
+
     return False
+
 
 # No access to interface before correct password
 if not check_password():

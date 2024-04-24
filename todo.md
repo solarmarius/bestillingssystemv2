@@ -12,6 +12,10 @@
 
 13.04: Implementere streamlit-authenticator, legge til login form i start-interface, hvis login er riktig (admin), redirect til admin.py page
 
+19.04: Lage ny funksjon for admin page -> endre antall f-pakk for hvert av artikkelnummer for å omregne til desimaltall
+
+24.04: Type check dataframe, slik at bare tall kan gå inn
+
 OK 13.04: Visuelt endre til å være mer overends med brand
 OK 13.04: Kompartemize de ulike tabene til main interface
 OK 13.04: Legg til kollone med F-pakk i csv og data, og bruke hide arg i data_editor
@@ -29,4 +33,7 @@ EKSEMPEL USERFLOW FOR MARKEDSANSVARLIG
 - Display ulike dataframes (småis, multipacks og desserte), kan klikke på en rad for å endre den eller slette den. Kan legge til nye rad (nye iser), må da fylle ut artikkelunummer og artikkelnavn. Denne blir sortert alfabetisk automatisk, og csv filen som main program bruker blir oppdatert. 
 
 - Implementere ulike koder (logins) for hvert depot, dette endrer SECRETS slik at man kan konfigurere hvilken epost (lager) man sender til 
+    - Egen YAML fil med informasjon om de ulike depotene (Navn på depot, pinkode til nettside, RECEIVER_EMAIL)
+    - HOST DETTE GJENNOM MONGODB!!
+
 - Koble backend til (FastAPI), finne ut hvordan man kan deploye til en server (Heroku?)
