@@ -2,44 +2,41 @@
 Displays the varebestilling tab.
 """
 
-from data import create_smais
-from data import create_multipack
-from data import create_dessert
-
-from utils import send_email
-from utils import menu
+import datetime
 
 import streamlit as st
 import pandas as pd
-import datetime
+
+from utils.data import create_smais, create_multipack, create_dessert
+from utils.email import send_email
+from utils.display import menu
+from utils.enums import Mode, Operation, BILER
 
 menu()
 
 st.header("Varebestilling")
 
 # Inputs
-bil_bes = st.selectbox(
-    "Bil:", ("790", "791", "792"), key="bil_bes", placeholder="Velg bil", index=None
-)
+bil = st.selectbox("Bil:", BILER, key="bil", placeholder="Velg bil", index=None)
 
-navn_bes = st.text_input("Sjåfør navn:", key="name_bes", placeholder="Ditt navn")
+navn = st.text_input("Sjåfør navn:", key="name_bes", placeholder="Ditt navn")
 
-dato_bes = st.date_input(
+dato = st.date_input(
     "Bestilt til dato:",
-    key="dato_bes",
+    key="dato",
     format="DD/MM/YYYY",
     value=datetime.date.today() + datetime.timedelta(days=1),
 )
-dato_bes = dato_bes.strftime("%d.%m.%Y")
+dato = dato.strftime("%d.%m.%Y")
 
 st.subheader("Småis")
-smais = create_smais(keyname="smais")
+smais = create_smais(keyname="smais", mode=Mode.DEFAULT)
 
 st.subheader("Multipacks")
-multipack = create_multipack(keyname="multipack")
+multipack = create_multipack(keyname="multipack", mode=Mode.DEFAULT)
 
 st.subheader("Desserter")
-dessert = create_dessert(keyname="dessert")
+dessert = create_dessert(keyname="dessert", mode=Mode.DEFAULT)
 
 st.write("Du skal bestille (dobbelsjekk!)")
 bestilling_smais = smais.loc[smais["Antalldpakk"] != 0]
@@ -54,7 +51,7 @@ st.dataframe(
 )
 
 with st.form(key="bestillingsform_bes", border=False):
-    if bil_bes == None or navn_bes == "":
+    if bil == None or navn == "":
         st.write("Bil / navn / dato må være fyllt ut!")
         submitted = st.form_submit_button(
             "Send inn", use_container_width=True, type="primary", disabled=True
@@ -66,19 +63,20 @@ with st.form(key="bestillingsform_bes", border=False):
 
     if submitted:
         with st.spinner("Sender bestilling..."):
-            send_email(
-                bilfra=bil_bes,
+            success = send_email(
+                bilfra=bil,
                 biltil=None,
-                dato=dato_bes,
-                person=navn_bes,
+                dato=dato,
+                person=navn,
                 selgernummer=None,
                 bestilling=bestilling,
                 arsak=None,
-                mode=1,
+                mode=Operation.BESTILLING,
             )
-        st.success(
-            "Bestilling sendt inn for {}, av {}, den {}".format(
-                bil_bes, navn_bes, dato_bes
+        if success:
+            st.success(
+                "Bestilling sendt inn for {}, av {}, den {}".format(bil, navn, dato)
             )
-        )
-        st.write("Du kan nå lukke appen.")
+            st.write("Du kan nå lukke appen.")
+        else:
+            st.error("Vennligst prøv igjen.")

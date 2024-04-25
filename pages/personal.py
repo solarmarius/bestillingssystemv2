@@ -2,16 +2,15 @@
 Displays the personalbestilling tab.
 """
 
-from data import create_smais
-from data import create_multipack
-from data import create_dessert
-
-from utils import send_email
-from utils import menu
+import datetime
 
 import streamlit as st
 import pandas as pd
-import datetime
+
+from utils.data import create_smais, create_multipack, create_dessert
+from utils.email import send_email
+from utils.display import menu
+from utils.enums import Mode, Operation
 
 menu()
 
@@ -31,13 +30,13 @@ dato = dato.strftime("%d.%m.%Y")
 st.write("NB: Du bestiller D-pakk. Merk antall på isene, spesielt på multipacks!")
 
 st.subheader("Småis")
-smais = create_smais(keyname="smais")
+smais = create_smais(keyname="smais", mode=Mode.DEFAULT)
 
 st.subheader("Multipacks")
-multipack = create_multipack(keyname="multipack")
+multipack = create_multipack(keyname="multipack", mode=Mode.DEFAULT)
 
 st.subheader("Desserter")
-dessert = create_dessert(keyname="dessert")
+dessert = create_dessert(keyname="dessert", mode=Mode.DEFAULT)
 
 st.write("Du skal bestille (dobbelsjekk!)")
 bestilling_smais = smais.loc[smais["Antalldpakk"] != 0]
@@ -65,7 +64,7 @@ with st.form(key="bestillingsform_per", border=False):
 
     if submitted:
         with st.spinner("Sender bestilling..."):
-            send_email(
+            success = send_email(
                 bilfra=None,
                 biltil=None,
                 dato=dato,
@@ -73,7 +72,10 @@ with st.form(key="bestillingsform_per", border=False):
                 selgernummer=nummer,
                 bestilling=bestilling,
                 arsak=None,
-                mode=3,
+                mode=Operation.PERSONAL,
             )
-        st.success("Personalbestilling sendt inn for {} den {}".format(navn, dato))
-        st.write("Du kan nå lukke appen.")
+        if success:
+            st.success("Personalbestilling sendt inn for {} den {}".format(navn, dato))
+            st.write("Du kan nå lukke appen.")
+        else:
+            st.error("Vennligst prøv igjen.")

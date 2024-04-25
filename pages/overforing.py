@@ -2,16 +2,15 @@
 Displays the vareoverføring tab.
 """
 
-from data import create_smais
-from data import create_multipack
-from data import create_dessert
-
-from utils import send_email
-from utils import menu
+import datetime
 
 import streamlit as st
 import pandas as pd
-import datetime
+
+from utils.data import create_smais, create_multipack, create_dessert
+from utils.email import send_email
+from utils.display import menu
+from utils.enums import Mode, Operation, BILER
 
 menu()
 
@@ -19,10 +18,10 @@ menu()
 st.header("Vareoverføring")
 
 bilfra = st.selectbox(
-    "Bil:", ("790", "791", "792"), key="bilfra", placeholder="Velg bil fra", index=None
+    "Bil:", BILER, key="bilfra", placeholder="Velg bil fra", index=None
 )
 biltil = st.selectbox(
-    "Bil:", ("790", "791", "792"), key="biltil", placeholder="Velg bil til", index=None
+    "Bil:", BILER, key="biltil", placeholder="Velg bil til", index=None
 )
 
 if (bilfra != None or biltil != None) and (bilfra == biltil):
@@ -36,13 +35,13 @@ dato = st.date_input(
 dato = dato.strftime("%d.%m.%Y")
 
 st.subheader("Småis")
-smais = create_smais(keyname="smais")
+smais = create_smais(keyname="smais", mode=Mode.DEFAULT)
 
 st.subheader("Multipacks")
-multipack = create_multipack(keyname="multipack")
+multipack = create_multipack(keyname="multipack", mode=Mode.DEFAULT)
 
 st.subheader("Desserter")
-dessert = create_dessert(keyname="dessert")
+dessert = create_dessert(keyname="dessert", mode=Mode.DEFAULT)
 
 st.write(f"Du skal overføre fra {bilfra} til {biltil} (dobbelsjekk!):")
 bestilling_smais = smais.loc[smais["Antalldpakk"] != 0]
@@ -70,7 +69,7 @@ with st.form(key="bestillingsform_ov", border=False):
 
     if submitted:
         with st.spinner("Sender overføring..."):
-            send_email(
+            success = send_email(
                 bilfra=bilfra,
                 biltil=biltil,
                 dato=dato,
@@ -78,11 +77,14 @@ with st.form(key="bestillingsform_ov", border=False):
                 selgernummer=None,
                 bestilling=bestilling,
                 arsak=None,
-                mode=2,
+                mode=Operation.OVERFORING,
             )
-        st.success(
-            "Overføring sendt inn fra bil {}, til bil {}, den {}".format(
-                bilfra, biltil, dato
+        if success:
+            st.success(
+                "Overføring sendt inn fra bil {}, til bil {}, den {}".format(
+                    bilfra, biltil, dato
+                )
             )
-        )
-        st.write("Du kan nå lukke appen.")
+            st.write("Du kan nå lukke appen.")
+        else:
+            st.error("Vennligst prøv igjen.")

@@ -2,25 +2,21 @@
 Displays the varetelling page
 """
 
-from data import create_smais
-from data import create_multipack
-from data import create_dessert
-from data import combine_data
-
-from utils import send_email
-from utils import menu
+import datetime
 
 import streamlit as st
 import pandas as pd
-import datetime
+
+from utils.data import create_smais, create_multipack, create_dessert, combine_data
+from utils.email import send_email
+from utils.display import menu
+from utils.enums import Mode, Operation, BILER
 
 menu()
 
 st.header("Varetelling")
 
-bil = st.selectbox(
-    "Bil:", ("790", "791", "792"), key="bil", placeholder="Velg bil", index=None
-)
+bil = st.selectbox("Bil:", BILER, key="bil", placeholder="Velg bil", index=None)
 
 navn = st.text_input("Sjåfør navn:", key="name", placeholder="Ditt navn")
 
@@ -35,24 +31,24 @@ dato = dato.strftime("%d.%m.%Y")
 st.header("Telling i bilen", divider="gray")
 
 st.subheader("Småis")
-smais_bil = create_smais(keyname="smais_bil", mode=1)
+smais_bil = create_smais(keyname="smais_bil", mode=Mode.DISPLAY_FPAKK)
 
 st.subheader("Multipacks")
-multipack_bil = create_multipack(keyname="multipack_bil", mode=1)
+multipack_bil = create_multipack(keyname="multipack_bil", mode=Mode.DISPLAY_FPAKK)
 
 st.subheader("Desserter")
-dessert_bil = create_dessert(keyname="dessert_bil", mode=1)
+dessert_bil = create_dessert(keyname="dessert_bil", mode=Mode.DISPLAY_FPAKK)
 
 st.header("Telling på fryser", divider="gray")
 
 st.subheader("Småis")
-smais_fryser = create_smais(keyname="smais_fryser", mode=1)
+smais_fryser = create_smais(keyname="smais_fryser", mode=Mode.DISPLAY_FPAKK)
 
 st.subheader("Multipacks")
-multipack_fryser = create_multipack(keyname="multipack_fryser", mode=1)
+multipack_fryser = create_multipack(keyname="multipack_fryser", mode=Mode.DISPLAY_FPAKK)
 
 st.subheader("Desserter")
-dessert_fryser = create_dessert(keyname="dessert_fryser", mode=1)
+dessert_fryser = create_dessert(keyname="dessert_fryser", mode=Mode.DISPLAY_FPAKK)
 
 st.write(f"Er du ferdig å telle?:")
 summer = st.button("Summer telling", type="primary", use_container_width=True)
@@ -107,18 +103,21 @@ with st.form(key="bestillingsform_vrak", border=False):
 
     if submitted:
         with st.spinner("Sender varetelling..."):
-            send_email(
+            success = send_email(
                 bilfra=bil,
                 biltil=None,
                 dato=dato,
                 person=navn,
                 selgernummer=None,
                 bestilling=st.session_state.bestilling,
-                mode=5,
+                mode=Operation.VARETELLING,
                 arsak=None,
                 flereiser=flere_iser,
             )
-        st.success(
-            "Varetelling sendt inn for {}, av {}, den {}".format(bil, navn, dato)
-        )
-        st.write("Du kan nå lukke appen.")
+        if success:
+            st.success(
+                "Varetelling sendt inn for {}, av {}, den {}".format(bil, navn, dato)
+            )
+            st.write("Du kan nå lukke appen.")
+        else:
+            st.error("Vennligst prøv igjen.")

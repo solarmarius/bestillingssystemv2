@@ -2,24 +2,21 @@
 Displays the vrak tab.
 """
 
-from data import create_smais
-from data import create_multipack
-from data import create_dessert
-
-from utils import send_email
-from utils import menu
+import datetime
 
 import streamlit as st
 import pandas as pd
-import datetime
+
+from utils.data import create_smais, create_multipack, create_dessert
+from utils.email import send_email
+from utils.display import menu
+from utils.enums import Mode, Operation, BILER
 
 menu()
 
 st.header("Vrakordre")
 
-bil = st.selectbox(
-    "Bil:", ("790", "791", "792"), key="bil", placeholder="Velg bil", index=None
-)
+bil = st.selectbox("Bil:", BILER, key="bil", placeholder="Velg bil", index=None)
 
 navn = st.text_input("Sjåfør navn:", key="name_vrak", placeholder="Ditt navn")
 
@@ -32,13 +29,13 @@ dato = st.date_input(
 dato = dato.strftime("%d.%m.%Y")
 
 st.subheader("Småis")
-smais = create_smais(keyname="smais", mode=1)
+smais = create_smais(keyname="smais", mode=Mode.DISPLAY_FPAKK)
 
 st.subheader("Multipacks")
-multipack = create_multipack(keyname="multipack", mode=1)
+multipack = create_multipack(keyname="multipack", mode=Mode.DISPLAY_FPAKK)
 
 st.subheader("Desserter")
-dessert = create_dessert(keyname="dessert", mode=1)
+dessert = create_dessert(keyname="dessert", mode=Mode.DISPLAY_FPAKK)
 
 arsak = st.text_input(
     "Årsak:", key="arsak", placeholder="Hva er årsaken til å vrake isen?"
@@ -73,7 +70,7 @@ with st.form(key="bestillingsform_vrak", border=False):
 
     if submitted:
         with st.spinner("Sender vrakordre..."):
-            send_email(
+            success = send_email(
                 bilfra=bil,
                 biltil=None,
                 dato=dato,
@@ -81,7 +78,12 @@ with st.form(key="bestillingsform_vrak", border=False):
                 selgernummer=None,
                 bestilling=bestilling,
                 arsak=arsak,
-                mode=4,
+                mode=Operation.VRAKORDRE,
             )
-        st.success("Vrakordre sendt inn for {}, av {}, den {}".format(bil, navn, dato))
-        st.write("Du kan nå lukke appen.")
+        if success:
+            st.success(
+                "Vrakordre sendt inn for {}, av {}, den {}".format(bil, navn, dato)
+            )
+            st.write("Du kan nå lukke appen.")
+        else:
+            st.error("Vennligst prøv igjen.")
