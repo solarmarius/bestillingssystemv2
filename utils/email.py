@@ -52,7 +52,9 @@ def create_bestilling_string(data: pd.DataFrame, display_fpakk=False) -> str:
         antalldpakk = str(data["Antalldpakk"][rad])
         if display_fpakk:
             antallfpakk = str(data["Antallfpakk"][rad])
-            line = "{} | {} | {}\n".format(artnr, artnavn, antalldpakk, antallfpakk)
+            line = "{} | {} | {} | {}\n".format(
+                artnr, artnavn, antalldpakk, antallfpakk
+            )
         else:
             line = "{} | {} | {}\n".format(artnr, artnavn, antalldpakk)
         bestilling_string += line
