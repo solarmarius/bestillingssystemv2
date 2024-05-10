@@ -44,9 +44,9 @@ st.subheader("Desserter")
 dessert = create_dessert(keyname="dessert", mode=Mode.DEFAULT)
 
 st.write(f"Du skal overføre fra {bilfra} til {biltil} (dobbelsjekk!):")
-bestilling_smais = smais.loc[smais["Antalldpakk"] != 0]
-bestilling_multipack = multipack.loc[multipack["Antalldpakk"] != 0]
-bestilling_dessert = dessert.loc[dessert["Antalldpakk"] != 0]
+bestilling_smais = smais.loc[smais["Antalldpakk"] > 0]
+bestilling_multipack = multipack.loc[multipack["Antalldpakk"] > 0]
+bestilling_dessert = dessert.loc[dessert["Antalldpakk"] > 0]
 
 bestilling = pd.concat([bestilling_smais, bestilling_multipack, bestilling_dessert])
 st.dataframe(

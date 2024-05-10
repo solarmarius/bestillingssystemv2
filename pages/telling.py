@@ -55,17 +55,17 @@ summer = st.button("Summer telling", type="primary", use_container_width=True)
 if summer:
     bestilling_smais = combine_data(smais_bil, smais_fryser)
     bestilling_smais = bestilling_smais.loc[
-        (bestilling_smais["Antalldpakk"] != 0) | (bestilling_smais["Antallfpakk"] != 0)
+        (bestilling_smais["Antalldpakk"] > 0) | (bestilling_smais["Antallfpakk"] > 0)
     ]
     bestilling_multipack = combine_data(multipack_bil, multipack_fryser)
     bestilling_multipack = bestilling_multipack.loc[
-        (bestilling_multipack["Antalldpakk"] != 0)
-        | (bestilling_multipack["Antallfpakk"] != 0)
+        (bestilling_multipack["Antalldpakk"] > 0)
+        | (bestilling_multipack["Antallfpakk"] > 0)
     ]
     bestilling_dessert = combine_data(dessert_bil, dessert_fryser)
     bestilling_dessert = bestilling_dessert.loc[
-        (bestilling_dessert["Antalldpakk"] != 0)
-        | (bestilling_dessert["Antallfpakk"] != 0)
+        (bestilling_dessert["Antalldpakk"] > 0)
+        | (bestilling_dessert["Antallfpakk"] > 0)
     ]
 
     st.write("Du har tellt (dobbelsjekk!)")

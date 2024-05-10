@@ -145,13 +145,24 @@ def combine_data(data_1: pd.DataFrame, data_2: pd.DataFrame) -> pd.DataFrame:
     data_2 = data_2.reset_index()
     for index, row in data_1.iterrows():
         key = row["Artikkelnummer"]
+        name = row["Artikkelnavn"]
         data_2rad = data_2.loc[data_2["Artikkelnummer"] == key]
 
-        new_dpakk = int(row["Antalldpakk"]) + int(data_2rad.iloc[0]["Antalldpakk"])
+        try:
+            new_dpakk = int(row["Antalldpakk"]) + int(data_2rad.iloc[0]["Antalldpakk"])
+        except Exception as e:
+            st.error(
+                f"Verdi under {name} er satt til 'None' i tabellen. Vennligst endre den til 0."
+            )
 
         data_1.at[index, "Antalldpakk"] = new_dpakk
 
-        new_fpakk = int(row["Antallfpakk"]) + int(data_2rad.iloc[0]["Antallfpakk"])
+        try:
+            new_fpakk = int(row["Antallfpakk"]) + int(data_2rad.iloc[0]["Antallfpakk"])
+        except Exception as e:
+            st.error(
+                f"Verdi under {name} er satt til 'None' i tabellen. Vennligst endre den til 0."
+            )
 
         data_1.at[index, "Antallfpakk"] = new_fpakk
 
@@ -189,7 +200,6 @@ def combine_pakk(data: pd.DataFrame) -> pd.DataFrame:
 
         # Replace verdi i dataen
         data.at[index, "Antalldpakk"] = dpakk + value
-
     return data
 
 

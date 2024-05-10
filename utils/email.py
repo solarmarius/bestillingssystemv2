@@ -16,6 +16,7 @@ import pandas as pd
 import smtplib
 import hmac
 import datetime
+import numpy as np
 
 Details = namedtuple(
     "Details",
@@ -40,7 +41,9 @@ EMAIL_STRINGS = {
 }
 
 
-def create_bestilling_string(data: pd.DataFrame, display_fpakk=False) -> str:
+def create_bestilling_string(
+    data: pd.DataFrame, display_fpakk=False, varetelling=False
+) -> str:
     """
     From a dataframe (order), create a string to be parsed to an email
     """
@@ -49,14 +52,18 @@ def create_bestilling_string(data: pd.DataFrame, display_fpakk=False) -> str:
     for rad in data.index:
         artnr = str(data["Artikkelnummer"][rad])
         artnavn = str(data["Artikkelnavn"][rad])
-        antalldpakk = str(data["Antalldpakk"][rad])
+        antalldpakk = data["Antalldpakk"][rad]
         if display_fpakk:
-            antallfpakk = str(data["Antallfpakk"][rad])
-            line = "{} | {} | {} | {}\n".format(
-                artnr, artnavn, antalldpakk, antallfpakk
-            )
+            antallfpakk = data["Antallfpakk"][rad]
+            if np.isnan(antalldpakk):
+                antalldpakk = 0.0
+            if np.isnan(antallfpakk):
+                antallfpakk = 0.0
+            line = f"{artnr} | {artnavn} | {antalldpakk:.0f} | {antallfpakk:.0f}\n"
+        elif varetelling:
+            line = f"{artnr} | {artnavn} | {antalldpakk:.4f}\n"
         else:
-            line = "{} | {} | {}\n".format(artnr, artnavn, antalldpakk)
+            line = f"{artnr} | {artnavn} | {antalldpakk:.0f}\n"
         bestilling_string += line
 
     return bestilling_string
@@ -97,9 +104,10 @@ def send_email(
 
     if mode == Operation.VRAKORDRE:
         bestilling_string = create_bestilling_string(bestilling, display_fpakk=True)
+    elif mode == Operation.VARETELLING:
+        bestilling = combine_pakk(bestilling)
+        bestilling_string = create_bestilling_string(bestilling, varetelling=True)
     else:
-        if mode == Operation.VARETELLING:
-            bestilling = combine_pakk(bestilling)
         bestilling_string = create_bestilling_string(bestilling)
 
     message = MIMEMultipart()

@@ -42,12 +42,12 @@ arsak = st.text_input(
 )
 
 st.write(f"Du skal vrake på grunn av {arsak} (dobbelsjekk!):")
-bestilling_smais = smais.loc[(smais["Antalldpakk"] != 0) | (smais["Antallfpakk"] != 0)]
+bestilling_smais = smais.loc[(smais["Antalldpakk"] > 0) | (smais["Antallfpakk"] > 0)]
 bestilling_multipack = multipack.loc[
-    (multipack["Antalldpakk"] != 0) | (multipack["Antallfpakk"] != 0)
+    (multipack["Antalldpakk"] > 0) | (multipack["Antallfpakk"] > 0)
 ]
 bestilling_dessert = dessert.loc[
-    (dessert["Antalldpakk"] != 0) | (dessert["Antallfpakk"] != 0)
+    (dessert["Antalldpakk"] > 0) | (dessert["Antallfpakk"] > 0)
 ]
 
 bestilling = pd.concat([bestilling_smais, bestilling_multipack, bestilling_dessert])
