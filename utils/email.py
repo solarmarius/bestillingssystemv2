@@ -139,9 +139,14 @@ def send_email(
     text = message.as_string()
 
     try:
-        server.sendmail(
-            st.secrets["SENDER_ADDRESS"], st.secrets["RECEIVER_ADDRESS"], text
-        )
+        if mode == Operation.VARETELLING:
+            server.sendmail(
+                st.secrets["SENDER_ADDRESS"], st.secrets["VARETELLING_ADDRESS"], text
+            )
+        else:
+            server.sendmail(
+                st.secrets["SENDER_ADDRESS"], st.secrets["RECEIVER_ADDRESS"], text
+            )
     except Exception as e:
         st.error("Kunne ikke sende mail!")
         logger.error("Exception occurred", exc_info=True)
