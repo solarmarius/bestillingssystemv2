@@ -33,7 +33,7 @@ Details = namedtuple(
 )
 
 EMAIL_STRINGS = {
-    Operation.BESTILLING: "VAREBESTILLING\nBil: {bilfra} \nBestilt til dato: {dato}\nSjåfør navn: {person}\n\nBestilling gjelder:\n{bestilling}",
+    Operation.BESTILLING: "VAREBESTILLING\nBil: {bilfra} \nBestilt til dato: {dato}\nSjåfør navn: {person}\n\nBestilling gjelder:\n{bestilling}\nEvt. andre varer:\n{flereiser}",
     Operation.OVERFORING: "VAREOVERFØRING\nBil fra: {bilfra} \nBil til: {biltil} \nOverført dato: {dato}\nSjåfør navn: {person}\n\nOverføringen gjelder:\n{bestilling}",
     Operation.PERSONAL: "PERSONALBESTILLING\nSelgernummer: {selgernummer} \nBestilt til dato: {dato}\nSjåfør navn: {person}\n\nPersonalbestilling gjelder:\n{bestilling}",
     Operation.VRAKORDRE: "VRAKORDRE\nBil: {bilfra} \nVraket dato: {dato}\nSjåfør navn: {person}\nÅrsak: {arsak}\n\nVrakordre gjelder: (D-pakk / F-pakk)\n{bestilling}",

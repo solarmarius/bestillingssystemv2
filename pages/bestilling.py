@@ -50,6 +50,11 @@ st.dataframe(
     use_container_width=True,
 )
 
+st.write("Skal du bestille iser som ikke er på lista? Skriv under på formen")
+st.write("*ART. NUMMER - NAVN PÅ ISEN - ANTALL D-PAKK*")
+flere_iser = st.text_area(label="flereiser", label_visibility="hidden")
+
+
 with st.form(key="bestillingsform_bes", border=False):
     if bil == None or navn == "":
         st.write("Bil / navn / dato må være fyllt ut!")
@@ -72,6 +77,7 @@ with st.form(key="bestillingsform_bes", border=False):
                 bestilling=bestilling,
                 arsak=None,
                 mode=Operation.BESTILLING,
+                flereiser=flere_iser,
             )
         if success:
             st.success(
